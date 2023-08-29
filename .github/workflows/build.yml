@@ -4,8 +4,8 @@
 name: go-build
 
 on:
-  push:
-    branches: [ release ]
+  release:
+    types: [prereleased]
 
 jobs:
   build:
@@ -45,7 +45,7 @@ jobs:
           path: copy2file-${{ matrix.archive-name }}.tar.gz
       - name: Release version
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'push'
+        if: github.event_name == 'release'
         with:
           allowUpdates: true
           artifacts: copy2file-${{ matrix.archive-name }}.tar.gz

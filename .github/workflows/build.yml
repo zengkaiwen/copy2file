@@ -15,6 +15,10 @@ jobs:
         include: 
           - build: macos
             os: macos-latest
+            archive-name: darwin
+    
+    permissions:
+      contents: write
 
     runs-on: ${{ matrix.os }}
 
@@ -31,4 +35,18 @@ jobs:
         run: go build -v -o copy2file .
         env:
           CGO_ENABLED: 1
-
+      
+      - name: Prepare Packaging
+        run: tar zcvf copy2file-${{ matrix.archive-name }}.tar.gz copy2file LICENSE
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: copy2file-${{ matrix.archive-name }}.tar.gz
+          path: copy2file-${{ matrix.archive-name }}.tar.gz
+      - name: Release version
+        uses: ncipollo/release-action@v1
+        if: github.event_name == 'release'
+        with:
+          allowUpdates: true
+          artifacts: copy2file-${{ matrix.archive-name }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}

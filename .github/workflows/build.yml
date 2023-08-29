@@ -1,11 +1,12 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: go-build
+name: Build
 
 on:
-  release:
-    types: [prereleased]
+  push:
+    tags:
+      - "*"
 
 jobs:
   build:
@@ -45,7 +46,6 @@ jobs:
           path: copy2file-${{ matrix.archive-name }}.tar.gz
       - name: Release version
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'release'
         with:
           allowUpdates: true
           artifacts: copy2file-${{ matrix.archive-name }}.tar.gz

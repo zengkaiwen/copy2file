@@ -45,7 +45,7 @@ jobs:
           path: copy2file-${{ matrix.archive-name }}.tar.gz
       - name: Release version
         uses: ncipollo/release-action@v1
-        if: github.event_name == 'release'
+        if: github.event_name == 'push'
         with:
           allowUpdates: true
           artifacts: copy2file-${{ matrix.archive-name }}.tar.gz

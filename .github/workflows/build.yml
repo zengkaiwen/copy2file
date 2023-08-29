@@ -5,18 +5,22 @@ name: go-build
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ release ]
 
 jobs:
   build:
     strategy:
       matrix:
-        goos: [linux, darwin, windows]
-        goarch: [amd64, arm64]
+        build: [macos, linux, windows]
+        include: 
+          - build: macos
+            os: macos-latest
+          - build: linux
+            os: ubuntu-18.04
+          - build: windows
+            os: windows-latest
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
@@ -30,7 +34,5 @@ jobs:
       - name: Build
         run: go build -v -o copy2file .
         env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
+          CGO_ENABLED: 1
 

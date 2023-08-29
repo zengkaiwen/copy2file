@@ -11,14 +11,10 @@ jobs:
   build:
     strategy:
       matrix:
-        build: [macos, linux, windows]
+        build: [macos]
         include: 
           - build: macos
             os: macos-latest
-          - build: linux
-            os: ubuntu-18.04
-          - build: windows
-            os: windows-latest
 
     runs-on: ${{ matrix.os }}
 

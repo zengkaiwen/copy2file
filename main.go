@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	fmt.Println("程序启动中...")
-	fmt.Println("目前仅支持 MacOS 系统")
+	fmt.Println("")
+	fmt.Println("================= 程序启动中 ==============")
 
 	err := clipboard.Init()
 	if err != nil {
@@ -22,12 +22,16 @@ func main() {
 	if osType == "darwin" {
 		optKey = "option"
 	}
-	hook.Register(hook.KeyDown, []string{"f", optKey, "shift"}, func(e hook.Event) {
-		log.Printf("按下了快捷键: shift+%s+f", optKey)
+	hook.Register(hook.KeyDown, []string{"g", optKey, "shift"}, func(e hook.Event) {
+		// log.Printf("按下了快捷键: shift+%s+g", optKey)
 		ClipboardFile()
 	})
 	s := hook.Start()
 
-	fmt.Printf("复制任意文本之后，按下快捷键 shift+%s+f 即可生成文件并拷贝到剪贴板中\n", optKey)
+	fmt.Println("=【使用说明】")
+	fmt.Println("= 1、复制任意文本")
+	fmt.Printf("= 2、按下快捷键 shift + %s + g \n", optKey)
+	fmt.Println("= 3、在其他支持文件粘贴的应用内粘贴")
+	fmt.Println("================ 程序启动成功 =============")
 	<-hook.Process(s)
 }

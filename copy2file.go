@@ -1,18 +1,19 @@
 package main
 
 import (
+	"copy2file/clipboardtool"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"runtime"
-	"strings"
+	"path/filepath"
 	"time"
 
-	"github.com/josa42/go-applescript"
 	"github.com/mitchellh/go-homedir"
 	"golang.design/x/clipboard"
 )
+
+var separator = string(filepath.Separator)
 
 func ClipboardFile() {
 	data := string(clipboard.Read(clipboard.FmtText))
@@ -24,7 +25,7 @@ func ClipboardFile() {
 	if err != nil {
 		return
 	}
-	copyFileToClipboard(fileName)
+	clipboardtool.CopyFileToClipboard(fileName)
 }
 
 func makeTmpFile(data string) (string, error) {
@@ -47,11 +48,11 @@ func makeTmpFile(data string) (string, error) {
 
 	isJson := json.Valid([]byte(data))
 	var fileName string
-	currentTime := time.Now().UTC().Format(time.RFC3339)
+	currentTime := time.Now().UTC().Format("20060102150405")
 	if isJson {
-		fileName = fmt.Sprintf("%s/%s.json", expandedDir, currentTime)
+		fileName = fmt.Sprintf("%s%s%s.json", expandedDir, separator, currentTime)
 	} else {
-		fileName = fmt.Sprintf("%s/%s.txt", expandedDir, currentTime)
+		fileName = fmt.Sprintf("%s%s%s.txt", expandedDir, separator, currentTime)
 	}
 	file, fileErr := os.Create(fileName)
 	if fileErr != nil {
@@ -71,27 +72,6 @@ func makeTmpFile(data string) (string, error) {
 		log.Printf("文件同步失败: %v", err)
 		return "", err
 	}
-	log.Println("文件创建成功:", fileName)
-	return fileName, nil
-}
-
-func copyFileToClipboard(fileName string) {
-	var osType = runtime.GOOS
-	if osType == "darwin" {
-		scriptStr := strings.TrimSpace(
-			fmt.Sprintf(`
-				tell application "Finder"
-						set the clipboard to POSIX file "%s"
-				end tell`,
-				fileName,
-			),
-		)
-		applescript.Run(scriptStr)
-	}
-	if osType == "windows" {
-		// TODO:
-	}
-	if osType == "linux" {
-		// TODO:
-	}
+	log.Println("文件创建成功:", file.Name())
+	return file.Name(), nil
 }

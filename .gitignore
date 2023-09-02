@@ -7,3 +7,5 @@ copy2file
 copy2file.sh
 copy2file.exe
 copy2file.bat
+
+go.work

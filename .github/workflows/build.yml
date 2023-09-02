@@ -12,11 +12,14 @@ jobs:
   build:
     strategy:
       matrix:
-        build: [macos]
+        build: [macos, windows]
         include: 
           - build: macos
             os: macos-latest
             archive-name: darwin
+          - build: windows
+            os: windows-latest
+            archive-name: windows
     
     permissions:
       contents: write
@@ -38,7 +41,11 @@ jobs:
           CGO_ENABLED: 1
       
       - name: Prepare Packaging
+        if: matrix.build == 'macos'
         run: tar zcvf copy2file-${{ matrix.archive-name }}.tar.gz copy2file LICENSE
+      - name: Prepare Packaging
+        if: matrix.build == 'windows'
+        run: tar zcvf copy2file-${{ matrix.archive-name }}.tar.gz copy2file.exe file2clip.exe LICENSE
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:

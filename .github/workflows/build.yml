@@ -36,7 +36,13 @@ jobs:
       - name: Download dependencies
         run: go mod download
       - name: Build
+        if: matrix.build == 'macos'
         run: go build -v -o copy2file .
+        env:
+          CGO_ENABLED: 1
+      - name: Build
+        if: matrix.build == 'windows'
+        run: go build -v -o copy2file.exe .
         env:
           CGO_ENABLED: 1
       
